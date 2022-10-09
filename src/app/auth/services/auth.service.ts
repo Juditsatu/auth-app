@@ -30,10 +30,10 @@ export class AuthService {
       tap( res => {
         if (res.ok) {
           localStorage.setItem('token', res.token!);
-          this._user = {
-            name:  res.name!,
-            uid: res.uid!,
-          }
+          // this._user = {
+          //   name:  res.name!,
+          //   uid: res.uid!,
+          // }
         }
       }),
       map( res => res.ok ),
@@ -52,10 +52,10 @@ export class AuthService {
         tap( res => {
           if (res.ok) {
             localStorage.setItem('token', res.token!);
-            this._user = {
-              name:  res.name!,
-              uid: res.uid!,
-            }
+            // this._user = {
+            //   name:  res.name!,
+            //   uid: res.uid!,
+            // }
           }
         }),
         map( res => res.ok ),
@@ -71,7 +71,15 @@ export class AuthService {
 
     return this.http.get<AuthResponse>( url, { headers } )
       .pipe(
-        map( res => { return res.ok }),
+        map( res => { 
+          localStorage.setItem('token', res.token!);
+          this._user = {
+            name:  res.name!,
+            uid: res.uid!,
+            email: res.email!
+          }
+          return res.ok 
+        }),
         catchError( err => of(false) )
       )
   }
@@ -79,4 +87,6 @@ export class AuthService {
   logout() {
     localStorage.clear();
   }
+
+  
 }
