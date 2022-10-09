@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+
+import Swal from 'sweetalert2';
+
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -23,15 +26,25 @@ export class LoginComponent {
     ) { }
 
   login() {
-    console.log(this.myForm.value);
+
+    this.authService.validateToken()
+      .subscribe( res => console.log (res) )
+    // console.log(this.myForm.value);
     const { email, password } = this.myForm.value;
 
     this.authService.login(email, password)
-      .subscribe( res => {
-        console.log(res);
+      .subscribe( valid => {
+
+        console.log(valid)
+
+        if (valid === true) {
+          this.router.navigateByUrl('/dashboard');
+        } else {
+          Swal.fire('Error', valid, 'error')
+        }
       })
    
-    // this.router.navigateByUrl('/dashboard');
+    this.router.navigateByUrl('/dashboard');
   }
 
 }
